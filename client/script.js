@@ -79,7 +79,10 @@ const handleSubmit = async (e) => {
 
   // fetch data form server -> bot's response
 
-  const response = await fetch('https://open-ai-codex-server.onrender.com', {
+  // const BACKEND_URL = 'https://open-ai-codex-server.onrender.com'
+  const BACKEND_URL = 'http://localhost:5001'
+
+  const response = await fetch(BACKEND_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

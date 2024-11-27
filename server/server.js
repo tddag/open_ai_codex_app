@@ -1,15 +1,16 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
-import { Configuration, OpenAIApi } from 'openai';
+// import { Configuration, OpenAIApi } from 'openai';
+import OpenAI from "openai";
+
 
 dotenv.config();
 
-const configuration = new Configuration({
+const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-})
-
-const openai = new OpenAIApi(configuration);
+    organization: "org-fkNK4UaeUaUiehaj6r8qRbyk"
+});
 
 const app = express();
 app.use(cors());
@@ -27,18 +28,20 @@ app.post('/', async (req, res) => {
 
         const prompt = req.body.prompt;
 
-        const response = await openai.createCompletion({
-            model : "text-davinci-003",
-            prompt : `${prompt}`,
-            temperature : 0,
-            max_tokens : 3000,
-            top_p : 1,
-            frequency_penalty : 0.5,
-            presence_penalty : 0
-        })  
+        const response = await openai.chat.completions.create({
+            messages: [
+                {
+                    role: "user",
+                    content: prompt
+                }
+            ],
+            model: "gpt-4o-mini",
+        })
+
+        console.log("response is: ", response)
 
         res.status(200).send({
-            bot: response.data.choices[0].text
+            bot: response.choices[0].message
         })
     } catch (error) {
         console.log(error)
